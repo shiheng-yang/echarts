@@ -7,10 +7,6 @@
             <span v-if="!isCollapse" style="white-space: nowrap">echarts图表示例</span>
             <i :class="collapseClass" style="font-size: 28px; cursor: pointer" @click="collapseClk"></i>
           </div>
-          <el-menu-item index="/Home">
-            <i class="el-icon-s-home"></i>
-            <span slot="title">首页总览</span>
-          </el-menu-item>
           <el-menu-item index="/echarts">
             <i class="el-icon-platform-eleme"></i>
             <span slot="title">echarts</span>

@@ -21,18 +21,18 @@ const routes = [
     path: '/echarts',
     component: () => import('../views/echarts.vue'),
   },
-  // {
-  //   path: '/echarts1',
-  //   component: () => import('../views/echarts1.vue'),
-  // },
-  // {
-  //   path: '/echarts2',
-  //   component: () => import('../views/echarts2.vue'),
-  // },
-  // {
-  //   path: '/echarts3',
-  //   component: () => import('../views/echarts3.vue'),
-  // },
+  {
+    path: '/echarts1',
+    component: () => import('../views/echarts1.vue'),
+  },
+  {
+    path: '/echarts2',
+    component: () => import('../views/echarts2.vue'),
+  },
+  {
+    path: '/echarts3',
+    component: () => import('../views/echarts3.vue'),
+  },
 ]
 
 const router = new VueRouter({
