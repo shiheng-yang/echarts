@@ -13,11 +13,11 @@
           </el-menu-item>
           <el-menu-item index="/echarts1">
             <i class="el-icon-platform-eleme"></i>
-            <span slot="title">echarts1</span>
+            <span slot="title">3D地图</span>
           </el-menu-item>
           <el-menu-item index="/echarts2">
             <i class="el-icon-platform-eleme"></i>
-            <span slot="title">echarts2</span>
+            <span slot="title">南海诸岛小窗化</span>
           </el-menu-item>
           <el-menu-item index="/echarts3">
             <i class="el-icon-platform-eleme"></i>

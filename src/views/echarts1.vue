@@ -20,7 +20,7 @@ export default {
             aspectScale: 1,
             zoom: 0.9,
             layoutCenter: ['50%', '50%'],
-            layoutSize: '180%',
+            layoutSize: '100%',
             show: true,
             roam: false,
             label: {
@@ -51,7 +51,6 @@ export default {
               borderWidth: 0.8,
             },
             emphasis: {
-              // 鼠标移入高亮时候的样式
               itemStyle: {
                 show: false,
                 color: '#fff',
@@ -71,7 +70,7 @@ export default {
             aspectScale: 1,
             zoom: 0.9,
             layoutCenter: ['50%', '51%'],
-            layoutSize: '180%',
+            layoutSize: '100%',
             roam: false,
             silent: true,
             itemStyle: {
@@ -90,7 +89,7 @@ export default {
             aspectScale: 1,
             zoom: 0.9,
             layoutCenter: ['50%', '52%'],
-            layoutSize: '180%',
+            layoutSize: '100%',
             roam: false,
             silent: true,
             itemStyle: {
@@ -109,7 +108,7 @@ export default {
             aspectScale: 1,
             zoom: 0.9,
             layoutCenter: ['50%', '53%'],
-            layoutSize: '180%',
+            layoutSize: '100%',
             roam: false,
             silent: true,
             itemStyle: {
@@ -128,7 +127,7 @@ export default {
             aspectScale: 1,
             zoom: 0.9,
             layoutCenter: ['50%', '54%'],
-            layoutSize: '180%',
+            layoutSize: '100%',
             roam: false,
             silent: true,
             itemStyle: {
@@ -144,25 +143,8 @@ export default {
         series: [
           {
             type: 'effectScatter',
-            zlevel: 3,
             coordinateSystem: 'geo',
-            label: {
-              show: false,
-            },
             data: [],
-            symbol: 'circle',
-            symbolSize: [20, 10],
-            itemStyle: {
-              color: 'orange',
-              shadowBlur: 10,
-              shadowColor: 'orange',
-            },
-            effectType: 'ripple',
-            showEffectOn: 'render', //emphasis移入显示动画，render一开始显示动画
-            rippleEffect: {
-              scale: 5,
-              brushType: 'stroke',
-            },
           },
         ],
       },
@@ -170,22 +152,10 @@ export default {
     }
   },
   methods: {
-    // 南沙诸岛以缩略图展示
-    async formatJson(chinaGeoJson) {
-      chinaGeoJson.features.forEach((v) => {
-        if (v.properties && v.properties.name == '海南省') {
-          v.geometry.coordinates = v.geometry.coordinates.slice(0, 1)
-        }
-      })
-      // 过滤掉海南诸岛边界线
-      chinaGeoJson.features = chinaGeoJson.features.filter((item) => item.properties.adcode !== '100000_JD')
-      return chinaGeoJson
-    },
     // 初始化
     async initChart() {
       let chinaGeoJson = await this.getGeoJson('100000_full.json')
-      let formatChinaGeoJson = await this.formatJson(chinaGeoJson.data)
-      this.initEcharts(formatChinaGeoJson, 'china')
+      this.initEcharts(chinaGeoJson.data, 'china')
     },
     //echarts绘图
     initEcharts(geoJson, name) {
