@@ -1,12 +1,14 @@
 <template>
   <div class="about">
     <div id="myMap"></div>
-    <el-button type="primary" size="large" title="点击返回上一级" class="btn" @click="upside">{{ adName }}</el-button>
+    <el-button type="primary" size="mini" title="点击返回上一级" class="btn" @click="upside">{{ adName }}</el-button>
   </div>
 </template>
 <script>
 import axios from 'axios'
+import { isPointInMultiPolygon } from '@/util/echartTool.js'
 let myChartMap = null //地图
+let charTimer = null // 点位轮播
 export default {
   name: 'about',
   data() {
@@ -143,8 +145,35 @@ export default {
         series: [
           {
             type: 'effectScatter',
+            zlevel: 3,
             coordinateSystem: 'geo',
+            emphasis: {
+              label: {
+                show: true,
+                position: 'top',
+                color: '#fff',
+                formatter: '{b|{b}}',
+              },
+            },
+            label: {
+              show: false,
+              position: 'top',
+              color: '#fff',
+            },
             data: [],
+            symbol: 'circle',
+            symbolSize: [20, 10],
+            itemStyle: {
+              color: 'orange',
+              shadowBlur: 10,
+              shadowColor: 'orange',
+            },
+            effectType: 'ripple',
+            showEffectOn: 'render', //emphasis移入显示动画，render一开始显示动画
+            rippleEffect: {
+              scale: 5,
+              brushType: 'stroke',
+            },
           },
         ],
       },
@@ -153,6 +182,7 @@ export default {
       historyData: [],
       adName: '中国',
       alladcode: '',
+      resData: [],
     }
   },
   methods: {
@@ -174,18 +204,67 @@ export default {
       this.alladcode = geoJson.data
       let chinaGeoJson = await this.getGeoJson('100000_full.json')
       let formatChinaGeoJson = await this.formatJson(chinaGeoJson.data)
+      // 鼠标移入点位的弹窗
+      let rich = {
+        b: {
+          color: '#fff',
+          backgroundColor: {
+            image: require('../../public/home/point.png'),
+          },
+          padding: [20, 30],
+          fontSize: 14,
+          align: 'center',
+        },
+      }
+      this.optionMap.series[0].emphasis.label.rich = rich
+      this.optionMap.series[0].label.rich = rich
       this.initEcharts(formatChinaGeoJson, 'china')
+    },
+    // 点位颜色高亮
+    highLightPoint(currentData, index) {
+      currentData.forEach((v, key) => {
+        let flag = key == index ? 'aqua' : 'orange'
+        v.itemStyle = {
+          color: flag,
+          shadowColor: flag,
+        }
+      })
+      this.optionMap.series[0].label.formatter = (e) => {
+        return e.name === currentData[index].name ? `{b|${e.name}}` : ''
+      }
     },
     // 格式图表
     formatChart(geoJson, name) {
+      // 过滤出当前地图的点位
+      let currentData = this.resData.filter((v) => {
+        return isPointInMultiPolygon([v.value[0], v.value[1]], geoJson.features)
+      })
       this.adName = name == 'china' ? '中国' : name
       this.$echarts.registerMap(name, geoJson)
       this.optionMap.geo.forEach((v) => {
         v.map = name
         v.layoutSize = name == 'china' ? '180%' : '100%'
       })
+      this.optionMap.series[0].data = currentData
+      // 点位颜色高亮
+      this.highLightPoint(currentData, 0)
+      this.optionMap.series[0].label.show = true
       myChartMap.clear()
       myChartMap.setOption(this.optionMap)
+      if (charTimer) {
+        clearInterval(charTimer)
+        charTimer = null
+      }
+      // 点位大于2个才循环轮播
+      if (currentData.length > 1) {
+        let i = 0
+        charTimer = setInterval(() => {
+          i++
+          if (i >= currentData.length) i = 0
+          this.highLightPoint(currentData, i)
+          myChartMap.setOption(this.optionMap)
+        }, 1000 * 3)
+      }
     },
     //echarts绘图
     initEcharts(geoJson, name) {
@@ -198,6 +277,8 @@ export default {
       this.historyData.push({ geoJson, name })
       myChartMap.off('click')
       myChartMap.on('click', (params) => {
+        // 点击的是当前地图
+        if (params.componentType != 'geo') return
         let clickRegionCode = this.alladcode.filter((areaJson) => areaJson.name === params.name)[0].adcode
         // 没有区县的地级市,东莞,中山,儋州,三沙,嘉峪关
         let adcodeArr = ['460400', '460300', '441900', '442000', '620200']
@@ -248,10 +329,60 @@ export default {
       maskColor: 'rgba(0 ,0 ,0 ,0.3 )',
       zlevel: 0,
     })
+    this.resData = [
+      {
+        name: '广州市',
+        value: [113.2644, 23.1291],
+      },
+      {
+        name: '成都市',
+        value: [104.0657, 30.6598],
+      },
+      {
+        name: '苏州市',
+        value: [120.6195, 31.2995],
+      },
+      {
+        name: '北京市',
+        value: [116.404, 39.9042],
+      },
+      {
+        name: '连云港市',
+        value: [119.1676, 34.5934],
+      },
+      {
+        name: '南京市',
+        value: [118.7674, 32.0415],
+      },
+      {
+        name: '杭州市',
+        value: [120.1535, 30.2874],
+      },
+      {
+        name: '乌鲁木齐市',
+        value: [87.6168, 43.7928],
+      },
+      {
+        name: '拉萨市',
+        value: [91.11, 29.97],
+      },
+      {
+        name: '西安市',
+        value: [108.953, 34.2779],
+      },
+      {
+        name: '南宁市',
+        value: [108.32006, 22.82402],
+      },
+    ]
     this.initChart()
   },
   destroyed() {
     if (myChartMap) myChartMap.clear()
+    if (charTimer) {
+      clearInterval(charTimer)
+      charTimer = null
+    }
   },
 }
 </script>

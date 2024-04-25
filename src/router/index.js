@@ -33,6 +33,14 @@ const routes = [
     path: '/echarts3',
     component: () => import('../views/echarts3.vue'),
   },
+  {
+    path: '/echarts4',
+    component: () => import('../views/echarts4.vue'),
+  },
+  {
+    path: '/echarts5',
+    component: () => import('../views/echarts5.vue'),
+  },
 ]
 
 const router = new VueRouter({

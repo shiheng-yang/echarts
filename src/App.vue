@@ -21,7 +21,15 @@
           </el-menu-item>
           <el-menu-item index="/echarts3">
             <i class="el-icon-platform-eleme"></i>
-            <span slot="title">echarts3</span>
+            <span slot="title">下钻,回钻</span>
+          </el-menu-item>
+          <el-menu-item index="/echarts4">
+            <i class="el-icon-platform-eleme"></i>
+            <span slot="title">飞线图</span>
+          </el-menu-item>
+          <el-menu-item index="/echarts5">
+            <i class="el-icon-platform-eleme"></i>
+            <span slot="title">点位弹窗轮播展示</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
