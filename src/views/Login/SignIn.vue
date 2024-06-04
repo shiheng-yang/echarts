@@ -35,8 +35,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        usename: '',
-        password: '',
+        usename: 'admin',
+        password: '123456',
       },
       rules: {
         usename: [{ required: true, trigger: 'blur', message: '请输入账号' }],
@@ -67,7 +67,7 @@ export default {
       const loading = this.$loading(this.loadingText)
       this.$message.success('登录成功!')
       this.$store.commit('user', this.ruleForm.usename)
-      this.$router.push('/Home')
+      this.$router.push('/echarts')
       loading.close()
     },
     // 回车登录

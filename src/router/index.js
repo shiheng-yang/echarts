@@ -41,6 +41,10 @@ const routes = [
     path: '/echarts5',
     component: () => import('../views/echarts5.vue'),
   },
+  {
+    path: '/echarts6',
+    component: () => import('../views/echarts6.vue'),
+  },
 ]
 
 const router = new VueRouter({

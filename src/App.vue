@@ -31,6 +31,10 @@
             <i class="el-icon-platform-eleme"></i>
             <span slot="title">点位弹窗轮播展示</span>
           </el-menu-item>
+          <el-menu-item index="/echarts6">
+            <i class="el-icon-platform-eleme"></i>
+            <span slot="title">地图json下载</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-container style="flex-direction: column">
@@ -92,7 +96,6 @@ export default {
       //标题
       get() {
         const { path } = this.$route
-        if (path == '/Home') return [{ class: 'el-icon-s-home', name: '首页总览' }]
         var nav = this.$store.state.nav
         if (nav.length > 0) {
           var navs = nav
@@ -165,12 +168,8 @@ export default {
           this.mainApp = true
           this.main = false
           this.aside = true
-          // if (this.$hasRouter(newVal.path)) {
           //没有包含的路由都跳首页
           this.$router.push(newVal.path)
-          // } else {
-          //   this.$router.push('/Home')
-          // }
         }
       },
     },
